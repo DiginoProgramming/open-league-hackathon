@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* src/components/FramesPage.css */
+.frames-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-image: url('/Samples/Resources/back_room02.png');
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.frame-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.frame-image {
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.frame-image:hover {
+  transform: scale(1.05);
+}

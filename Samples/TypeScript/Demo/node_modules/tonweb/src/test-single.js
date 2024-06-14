@@ -1,0 +1,87 @@
+const TonWeb = require("./index");
+const {Cell} = require("./boc");
+const {base64ToBytes, Address, bytesToHex, bytesToBase64} = require("./utils");
+const {parseAddress} = require("./contract/token/nft/NftUtils");
+const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {apiKey: ''}));
+
+// compiled by func v0.4.2
+const singleNominator10code = 'B5EE9C7241020D010001C5000114FF00F4A413F4BCF2C80B0102016202030268D0ED44D0FA40FA40D122C700925F06E003D0D3030171B0925F06E0FA403002D31FD33F5343C7059133E30D5235C705925F06E30D04050201200B0C01C422830BBA8EA0FA005387A182103B9ACA00A112B60881200421C200F2F452406D80188040DB3CDE22811001BA9EFA405044C858CF1601CF16C9ED549133E221817702BA9802D307D402FB0002DE2182009903BA9D02D4812002226EF2F201FB0402DE0904F02082104E73744BBA8FE102FA4430F828FA443081200302C0FF12F2F4830C01C0FFF2F481200123F2F481200524821047868C00BEF2F4FA0020DB3C300581200405A182103B9ACA00A15210BB14F2F4DB3C82104E73744BC8CB1F5230CB3F5005CF16C9443080188040DB3C9410356C41E2821047657424BA06080907001CD3FF31D31FD31F31D3FF31D431D102368F16821047657424C8CB1FCB3FC9DB3C705880188040DB3C9130E20809011671F833D0D70BFF7F01DB3C0A0048226EB32091719170E203C8CB055006CF165004FA02CB6A039358CC019130E201C901FB00001674C8CB0212CA07CBFFC9D00027BDF8CB938B82A38002A380036B6AA39152988B6C0015BFE5076A2687D207D2068C95E85143';
+// compiled by func v0.4.2
+const singleNominator11code = 'B5EE9C7241020D010001F0000114FF00F4A413F4BCF2C80B01020162020302BCD0ED44D0FA40FA40D122C700925F06E003D0D3030171B0925F06E0FA403002D31F7022C000228B1778C705B022D74AC000B08E136C21830BC85376A182103B9ACA00A1FA02C9D09430D33F12E25343C7059133E30D5235C705925F06E30D04050201200B0C01C421830BBA8EA0FA005387A182103B9ACA00A112B60881200421C200F2F452406D80188040DB3CDE21811001BA9EFA405044C858CF1601CF16C9ED549133E220817702BA9802D307D402FB0002DE2082009903BA9D02D4812002226EF2F201FB0402DE0904F22382104E73744BBA8FE102FA4430F828FA443081200302C0FF12F2F4830C01C0FFF2F481200122F2F481200524821047868C00BEF2F4FA0020DB3C300581200405A182103B9ACA00A15210BB14F2F4DB3C82104E73744BC8CB1F5220CB3F5005CF16C9443080188040DB3C9410356C41E201821047657424BA06080907001CD3FF31D31FD31F31D3FF31D431D102368F16821047657424C8CB1FCB3FC9DB3C705880188040DB3C9130E20809011671F833D0D70BFF7F01DB3C0A0048226EB32091719170E203C8CB055006CF165004FA02CB6A039358CC019130E201C901FB00001674C8CB0212CA07CBFFC9D00027BDF8CB938B82A38002A380036B6AA39152988B6C0015BFE5076A2687D207D2068CEEE1C973';
+
+// https://github.com/ton-blockchain/mytonctrl/blob/mytonctrl2/mytoncore/contracts/single-nominator-pool/single-nominator-code.hex
+const mtcSingleNominator11code = 'b5ee9c7241020d010001f0000114ff00f4a413f4bcf2c80b01020162050202012004030015bfe5076a2687d207d2068c0027bdf8cb938b82a38002a380036b6aa39152988b6c02bcd0ed44d0fa40fa40d122c700925f06e003d0d3030171b0925f06e0fa403002d31f7022c000228b1778c705b022d74ac000b08e136c21830bc85376a182103b9aca00a1fa02c9d09430d33f12e25343c7059133e30d5235c705925f06e30d0b0604f22382104e73744bba8fe102fa4430f828fa443081200302c0ff12f2f4830c01c0fff2f481200122f2f481200524821047868c00bef2f4fa0020db3c300581200405a182103b9aca00a15210bb14f2f4db3c82104e73744bc8cb1f5220cb3f5005cf16c9443080188040db3c9410356c41e201821047657424ba0a080c0702368f16821047657424c8cb1fcb3fc9db3c705880188040db3c9130e2080c011671f833d0d70bff7f01db3c09001674c8cb0212ca07cbffc9d0001cd3ff31d31fd31f31d3ff31d431d101c421830bba8ea0fa005387a182103b9aca00a112b60881200421c200f2f452406d80188040db3cde21811001ba9efa405044c858cf1601cf16c9ed549133e220817702ba9802d307d402fb0002de2082009903ba9d02d4812002226ef2f201fb0402de0c0048226eb32091719170e203c8cb055006cf165004fa02cb6a039358cc019130e201c901fb00fb5470d1';
+
+const init = async () => {
+
+
+    const getHash = async (codeHexOrBytes) => {
+        const cell = await Cell.oneFromBoc(codeHexOrBytes);
+        const hashBytes = await cell.hash();
+        return bytesToBase64(hashBytes);
+    }
+
+    const singleNominator10hash = await getHash(singleNominator10code);
+
+    const singleNominator11hash = await getHash(singleNominator11code);
+
+    const mtcSingleNominator11hash = await getHash(mtcSingleNominator11code);
+
+
+    const info = await tonweb.provider.getAddressInfo('Ef_bKWqxkY3fhOzKexkJ9reW7i72wzzF3MrIMbUH9_8aeFno');
+    console.log(info.code);
+    const myHash = await getHash(base64ToBytes(info.code));
+
+    console.log({
+        singleNominator10hash,
+        10: singleNominator10hash === 'pCrmnqx2/+DkUtPU8T04ehTkbAGlqtul/B2JPmxx9bo=',
+        singleNominator11hash,
+        mtcSingleNominator11hash,
+        myHash,
+        11: singleNominator11hash === myHash,
+        'mtc11': singleNominator11hash === mtcSingleNominator11hash
+    })
+
+    const result = await tonweb.provider.call2('Ef_bKWqxkY3fhOzKexkJ9reW7i72wzzF3MrIMbUH9_8aeFno', 'get_roles');
+
+    /**
+     * @param bs    {BitString}
+     * @param cursor    {number}
+     * @param bits  {number}
+     * @return {BigInt}
+     */
+    const readIntFromBitString = (bs, cursor, bits) => {
+        let n = BigInt(0);
+        for (let i = 0; i < bits; i++) {
+            n *= BigInt(2);
+            n += BigInt(bs.get(cursor + i));
+        }
+        return n;
+    }
+
+    /**
+     * @param cell  {Cell}
+     * @return {Address|null}
+     */
+    const parseAddress = cell => {
+        let n = readIntFromBitString(cell.bits, 3, 8);
+        if (n > BigInt(127)) {
+            n = n - BigInt(256);
+        }
+        const hashPart = readIntFromBitString(cell.bits, 3 + 8, 256);
+        if (n.toString(10) + ":" + hashPart.toString(16) === '0:0') return null;
+        const s = n.toString(10) + ":" + hashPart.toString(16).padStart(64, '0');
+        return new Address(s);
+    };
+
+    const ownerAddress = parseAddress(result[0]);
+    const validatorAddress = parseAddress(result[1]);
+
+    console.log({
+        ownerAddress: ownerAddress.toString(true, true, true),
+        validatorAddress: validatorAddress.toString(true, true, false)
+    })
+}
+
+
+init();

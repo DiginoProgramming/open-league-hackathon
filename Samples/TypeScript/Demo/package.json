@@ -1,0 +1,53 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "node copy_resources.js && vite --host",
+    "build": "node copy_resources.js && vite build --mode development",
+    "build:prod": "node copy_resources.js && vite build",
+    "copy_resources": "node copy_resources.js",
+    "test": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "serve": "vite preview --port 5000 --host",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.13.0",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
+  },
+  "dependencies": {
+    "@tma.js/sdk": "^2.4.0",
+    "@tma.js/sdk-react": "^2.2.2",
+    "@ton/core": "^0.56.3",
+    "@ton/crypto": "^3.2.0",
+    "@ton/ton": "^13.11.1",
+    "@tonconnect/protocol": "^2.2.6",
+    "@tonconnect/ui": "^2.0.2",
+    "@tonconnect/ui-react": "^2.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.2",
+    "eruda": "^3.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "ton": "^13.9.0",
+    "ton-crypto": "^3.2.0",
+    "tonfura-sdk": "^1.3.1",
+    "tonweb": "^0.0.66"
+  }
+}
